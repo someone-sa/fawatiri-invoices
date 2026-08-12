@@ -1,0 +1,5 @@
+# Dev / session artifacts (never publish)
+session-report*.md
+session_report*.md
+.kotlin/
+*.salive

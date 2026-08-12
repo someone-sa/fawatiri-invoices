@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "400522539096",
+    "project_id": "fawatiri-f2521",
+    "storage_bucket": "fawatiri-f2521.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:400522539096:android:0fa8210d965d1ff0261a2d",
+        "android_client_info": {
+          "package_name": "com.example.fawatiri"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGY7UkMpNpzImPHc6uYMdGjF6PcK1p040"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

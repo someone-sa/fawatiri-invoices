@@ -1,0 +1,28 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "fawatiri-f2521",
+          "appId": "1:400522539096:android:0fa8210d965d1ff0261a2d",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "fawatiri-f2521",
+          "configurations": {
+            "android": "1:400522539096:android:0fa8210d965d1ff0261a2d",
+            "ios": "1:400522539096:ios:b1895af53654ae41261a2d",
+            "macos": "1:400522539096:ios:b1895af53654ae41261a2d",
+            "web": "1:400522539096:web:010d32e45cc24175261a2d",
+            "windows": "1:400522539096:web:ec4c6a2e261fb81b261a2d"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  }
+}

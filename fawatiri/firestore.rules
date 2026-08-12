@@ -1,0 +1,90 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Roles from config/roles (Firebase Console is the source of truth) ──
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner() {
+      return isSignedIn() &&
+        request.auth.uid == get(/databases/$(database)/documents/config/roles).data.ownerUid;
+    }
+
+    function isReceiver() {
+      return isSignedIn() &&
+        request.auth.uid == get(/databases/$(database)/documents/config/roles).data.receiverUid;
+    }
+
+    function isMember() {
+      return isOwner() || isReceiver();
+    }
+
+    // ── config ──────────────────────────────────────────────
+    match /config/roles {
+      allow read: if isMember();
+      allow write: if false; // managed in Firebase Console only
+    }
+
+    match /config/receiver_security {
+      allow read: if isMember();
+      allow write: if isReceiver()
+        && request.resource.data.keys().hasOnly(['pin', 'pinEnabled', 'updatedAt'])
+        && request.resource.data.pin is string
+        && request.resource.data.pinEnabled is bool;
+    }
+
+    // ── invoices ────────────────────────────────────────────
+    match /invoices/{invoiceId} {
+      allow read: if isMember();
+
+      allow create: if isOwner()
+        && request.resource.data.status in ['sent', 'approved']
+        && request.resource.data.invoiceNumber is int
+        && request.resource.data.total is number
+        && request.resource.data.createdAt is timestamp;
+
+      allow update: if
+        // owner edits lines/total and resets status to sent/approved
+        (isOwner()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['items', 'total', 'status'])
+          && request.resource.data.status in ['sent', 'approved'])
+        ||
+        // receiver approves a sent invoice only
+        (isReceiver()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+          && resource.data.status == 'sent'
+          && request.resource.data.status == 'approved');
+
+      allow delete: if false;
+    }
+
+    // ── products ────────────────────────────────────────────
+    match /products/{productId} {
+      allow read: if isMember();
+      allow create: if isOwner();
+      allow update: if isOwner();
+      allow delete: if isOwner();
+    }
+
+    // ── payments ────────────────────────────────────────────
+    match /payments/{paymentId} {
+      allow read: if isMember();
+
+      allow create: if isOwner()
+        && request.resource.data.status == 'pending'
+        && request.resource.data.amount is number
+        && request.resource.data.totalAtTime is number
+        && request.resource.data.createdAt is timestamp;
+
+      allow update: if isReceiver()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'confirmedAt'])
+        && resource.data.status == 'pending'
+        && request.resource.data.status == 'confirmed'
+        && request.resource.data.confirmedAt is timestamp;
+
+      allow delete: if false;
+    }
+  }
+}
