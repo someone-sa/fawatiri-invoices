@@ -284,6 +284,7 @@ service cloud.firestore {
 - ✅ PIN محلي مشفّر (flutter_secure_storage)
 - ✅ قواعد Firestore صارمة حسب الدور
 - ✅ اعتماد الفواتير محمي بـPIN اختياري
+<img width="1510" height="730" alt="لقطة شاشة 2026-08-12 151221" src="https://github.com/user-attachments/assets/69d58ca4-1591-4af1-9323-713a5e6392e2" />
 
 ---
 
